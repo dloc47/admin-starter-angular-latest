@@ -1,0 +1,246 @@
+<aside class="bg-gray-900 h-screen border-r border-gray-800 transition-all duration-300 flex flex-col" [ngClass]="{'w-64': !isCollapsed, 'w-20': isCollapsed}">
+  <!-- Logo Section -->
+  <div class="h-16 flex items-center px-4 border-b border-gray-800">
+    <div class="flex items-center" [ngClass]="{'justify-between w-full': !isCollapsed, 'justify-center': isCollapsed}">
+      <div class="flex items-center">
+        <lucide-icon [name]="icons.dashboard" class="w-7 h-7 text-white"></lucide-icon>
+        <span class="ml-3 text-xl font-bold text-white" *ngIf="!isCollapsed">Quiz Admin</span>
+      </div>
+      <!-- Toggle Button -->
+      <button class="text-gray-400 hover:text-white transition-colors" (click)="toggleSidebar()">
+        <svg *ngIf="!isCollapsed" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
+        </svg>
+        <svg *ngIf="isCollapsed" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="flex-1 p-3 overflow-y-auto">
+    <div class="space-y-1.5">
+      <!-- Dashboard -->
+      <a routerLink="/dashboard" routerLinkActive="bg-gray-800 text-blue-400" 
+         class="flex items-center px-3 py-2 text-gray-300 rounded-md hover:bg-gray-800 hover:text-gray-300 transition-colors">
+        <lucide-icon [name]="icons.home" class="w-4 h-4"></lucide-icon>
+        <span class="ml-3" *ngIf="!isCollapsed">Dashboard</span>
+      </a>
+
+      <!-- Quiz Management with Dropdown -->
+      <div>
+        <button (click)="toggleMenu('quiz')" class="flex items-center justify-between w-full px-3 py-2 text-gray-300 rounded-md hover:bg-gray-800 hover:text-gray-300 transition-colors">
+          <div class="flex items-center">
+            <lucide-icon [name]="icons.quiz" class="w-4 h-4"></lucide-icon>
+            <span class="ml-3" *ngIf="!isCollapsed">Quiz</span>
+          </div>
+          <lucide-icon 
+            [name]="expandedMenus.quiz ? icons.chevronDown : icons.chevronRight" 
+            class="w-4 h-4 ml-2" 
+            *ngIf="!isCollapsed">
+          </lucide-icon>
+        </button>
+        
+        <!-- Quiz Submenu -->
+        <div *ngIf="expandedMenus.quiz && !isCollapsed" class="ml-8 mt-1 space-y-1">
+          <a routerLink="/quiz/list" routerLinkActive="text-blue-400" 
+             class="flex items-center px-3 py-1.5 text-gray-300 rounded-md hover:bg-gray-800 hover:text-gray-300 transition-colors">
+            <lucide-icon [name]="icons.quizList" class="w-4 h-4"></lucide-icon>
+            <span class="ml-3">All Quizzes</span>
+          </a>
+          <a routerLink="/quiz/create" routerLinkActive="text-blue-400" 
+             class="flex items-center px-3 py-1.5 text-gray-300 rounded-md hover:bg-gray-800 hover:text-gray-300 transition-colors">
+            <lucide-icon [name]="icons.addQuiz" class="w-4 h-4"></lucide-icon>
+            <span class="ml-3">Create New</span>
+          </a>
+          <a routerLink="/quiz/config" routerLinkActive="text-blue-400" 
+             class="flex items-center px-3 py-1.5 text-gray-300 rounded-md hover:bg-gray-800 hover:text-gray-300 transition-colors">
+            <lucide-icon [name]="icons.quizConfig" class="w-4 h-4"></lucide-icon>
+            <span class="ml-3">Configuration</span>
+          </a>
+          <a routerLink="/quiz/rules" routerLinkActive="text-blue-400" 
+             class="flex items-center px-3 py-1.5 text-gray-300 rounded-md hover:bg-gray-800 hover:text-gray-300 transition-colors">
+            <lucide-icon [name]="icons.quizRules" class="w-4 h-4"></lucide-icon>
+            <span class="ml-3">Rules</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Players Management with Dropdown -->
+      <div>
+        <button (click)="toggleMenu('players')" class="flex items-center justify-between w-full px-3 py-2 text-gray-300 rounded-md hover:bg-gray-800 hover:text-gray-300 transition-colors">
+          <div class="flex items-center">
+            <lucide-icon [name]="icons.players" class="w-4 h-4"></lucide-icon>
+            <span class="ml-3" *ngIf="!isCollapsed">Players</span>
+          </div>
+          <lucide-icon 
+            [name]="expandedMenus.players ? icons.chevronDown : icons.chevronRight" 
+            class="w-4 h-4 ml-2" 
+            *ngIf="!isCollapsed">
+          </lucide-icon>
+        </button>
+        
+        <!-- Players Submenu -->
+        <div *ngIf="expandedMenus.players && !isCollapsed" class="ml-8 mt-1 space-y-1">
+          <a routerLink="/players/list" routerLinkActive="text-blue-400" 
+             class="flex items-center px-3 py-1.5 text-gray-300 rounded-md hover:bg-gray-800 hover:text-gray-300 transition-colors">
+            <lucide-icon [name]="icons.playerList" class="w-4 h-4"></lucide-icon>
+            <span class="ml-3">Player List</span>
+          </a>
+          <a routerLink="/players/activity" routerLinkActive="text-blue-400" 
+             class="flex items-center px-3 py-1.5 text-gray-300 rounded-md hover:bg-gray-800 hover:text-gray-300 transition-colors">
+            <lucide-icon [name]="icons.playerActivity" class="w-4 h-4"></lucide-icon>
+            <span class="ml-3">Activity Logs</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Coupons Management with Dropdown -->
+      <div>
+        <button (click)="toggleMenu('coupons')" class="flex items-center justify-between w-full px-3 py-2 text-gray-300 rounded-md hover:bg-gray-800 hover:text-gray-300 transition-colors">
+          <div class="flex items-center">
+            <lucide-icon [name]="icons.coupons" class="w-4 h-4"></lucide-icon>
+            <span class="ml-3" *ngIf="!isCollapsed">Coupons</span>
+          </div>
+          <lucide-icon 
+            [name]="expandedMenus.coupons ? icons.chevronDown : icons.chevronRight" 
+            class="w-4 h-4 ml-2" 
+            *ngIf="!isCollapsed">
+          </lucide-icon>
+        </button>
+        
+        <!-- Coupons Submenu -->
+        <div *ngIf="expandedMenus.coupons && !isCollapsed" class="ml-8 mt-1 space-y-1">
+          <a routerLink="/coupons/list" routerLinkActive="text-blue-400" 
+             class="flex items-center px-3 py-1.5 text-gray-300 rounded-md hover:bg-gray-800 hover:text-gray-300 transition-colors">
+            <lucide-icon [name]="icons.couponList" class="w-4 h-4"></lucide-icon>
+            <span class="ml-3">Coupon List</span>
+          </a>
+          <a routerLink="/coupons/generate" routerLinkActive="text-blue-400" 
+             class="flex items-center px-3 py-1.5 text-gray-300 rounded-md hover:bg-gray-800 hover:text-gray-300 transition-colors">
+            <lucide-icon [name]="icons.couponGenerate" class="w-4 h-4"></lucide-icon>
+            <span class="ml-3">Generate Coupons</span>
+          </a>
+          <a routerLink="/coupons/redemptions" routerLinkActive="text-blue-400" 
+             class="flex items-center px-3 py-1.5 text-gray-300 rounded-md hover:bg-gray-800 hover:text-gray-300 transition-colors">
+            <lucide-icon [name]="icons.redemptions" class="w-4 h-4"></lucide-icon>
+            <span class="ml-3">Redemptions</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Users Management with Dropdown -->
+      <div>
+        <button (click)="toggleMenu('users')" class="flex items-center justify-between w-full px-3 py-2 text-gray-300 rounded-md hover:bg-gray-800 hover:text-gray-300 transition-colors">
+          <div class="flex items-center">
+            <lucide-icon [name]="icons.users" class="w-4 h-4"></lucide-icon>
+            <span class="ml-3" *ngIf="!isCollapsed">Users</span>
+          </div>
+          <lucide-icon 
+            [name]="expandedMenus.users ? icons.chevronDown : icons.chevronRight" 
+            class="w-4 h-4 ml-2" 
+            *ngIf="!isCollapsed">
+          </lucide-icon>
+        </button>
+        
+        <!-- Users Submenu -->
+        <div *ngIf="expandedMenus.users && !isCollapsed" class="ml-8 mt-1 space-y-1">
+          <a routerLink="/users/list" routerLinkActive="text-blue-400" 
+             class="flex items-center px-3 py-1.5 text-gray-300 rounded-md hover:bg-gray-800 hover:text-gray-300 transition-colors">
+            <lucide-icon [name]="icons.userList" class="w-4 h-4"></lucide-icon>
+            <span class="ml-3">User List</span>
+          </a>
+          <a routerLink="/users/roles" routerLinkActive="text-blue-400" 
+             class="flex items-center px-3 py-1.5 text-gray-300 rounded-md hover:bg-gray-800 hover:text-gray-300 transition-colors">
+            <lucide-icon [name]="icons.roles" class="w-4 h-4"></lucide-icon>
+            <span class="ml-3">Roles & Permissions</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Content Management with Dropdown -->
+      <div>
+        <button (click)="toggleMenu('content')" class="flex items-center justify-between w-full px-3 py-2 text-gray-300 rounded-md hover:bg-gray-800 hover:text-gray-300 transition-colors">
+          <div class="flex items-center">
+            <lucide-icon [name]="icons.content" class="w-4 h-4"></lucide-icon>
+            <span class="ml-3" *ngIf="!isCollapsed">Content</span>
+          </div>
+          <lucide-icon 
+            [name]="expandedMenus.content ? icons.chevronDown : icons.chevronRight" 
+            class="w-4 h-4 ml-2" 
+            *ngIf="!isCollapsed">
+          </lucide-icon>
+        </button>
+        
+        <!-- Content Submenu -->
+        <div *ngIf="expandedMenus.content && !isCollapsed" class="ml-8 mt-1 space-y-1">
+          <a routerLink="/content/banners" routerLinkActive="text-blue-400" 
+             class="flex items-center px-3 py-1.5 text-gray-300 rounded-md hover:bg-gray-800 hover:text-gray-300 transition-colors">
+            <lucide-icon [name]="icons.banners" class="w-4 h-4"></lucide-icon>
+            <span class="ml-3">Banners</span>
+          </a>
+          <a routerLink="/content/faqs" routerLinkActive="text-blue-400" 
+             class="flex items-center px-3 py-1.5 text-gray-300 rounded-md hover:bg-gray-800 hover:text-gray-300 transition-colors">
+            <lucide-icon [name]="icons.faqs" class="w-4 h-4"></lucide-icon>
+            <span class="ml-3">FAQs</span>
+          </a>
+          <a routerLink="/content/about" routerLinkActive="text-blue-400" 
+             class="flex items-center px-3 py-1.5 text-gray-300 rounded-md hover:bg-gray-800 hover:text-gray-300 transition-colors">
+            <lucide-icon [name]="icons.content" class="w-4 h-4"></lucide-icon>
+            <span class="ml-3">About Content</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Reports with Dropdown -->
+      <div>
+        <button (click)="toggleMenu('reports')" class="flex items-center justify-between w-full px-3 py-2 text-gray-300 rounded-md hover:bg-gray-800 hover:text-gray-300 transition-colors">
+          <div class="flex items-center">
+            <lucide-icon [name]="icons.reports" class="w-4 h-4"></lucide-icon>
+            <span class="ml-3" *ngIf="!isCollapsed">Reports</span>
+          </div>
+          <lucide-icon 
+            [name]="expandedMenus.reports ? icons.chevronDown : icons.chevronRight" 
+            class="w-4 h-4 ml-2" 
+            *ngIf="!isCollapsed">
+          </lucide-icon>
+        </button>
+        
+        <!-- Reports Submenu -->
+        <div *ngIf="expandedMenus.reports && !isCollapsed" class="ml-8 mt-1 space-y-1">
+          <a routerLink="/reports/quiz" routerLinkActive="text-blue-400" 
+             class="flex items-center px-3 py-1.5 text-gray-300 rounded-md hover:bg-gray-800 hover:text-gray-300 transition-colors">
+            <lucide-icon [name]="icons.quiz" class="w-4 h-4"></lucide-icon>
+            <span class="ml-3">Quiz Performance</span>
+          </a>
+          <a routerLink="/reports/coupons" routerLinkActive="text-blue-400" 
+             class="flex items-center px-3 py-1.5 text-gray-300 rounded-md hover:bg-gray-800 hover:text-gray-300 transition-colors">
+            <lucide-icon [name]="icons.coupons" class="w-4 h-4"></lucide-icon>
+            <span class="ml-3">Coupon Redemptions</span>
+          </a>
+          <a routerLink="/reports/player" routerLinkActive="text-blue-400" 
+             class="flex items-center px-3 py-1.5 text-gray-300 rounded-md hover:bg-gray-800 hover:text-gray-300 transition-colors">
+            <lucide-icon [name]="icons.players" class="w-4 h-4"></lucide-icon>
+            <span class="ml-3">Player Activity</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Settings -->
+      <a routerLink="/settings" routerLinkActive="bg-gray-800 text-blue-400" 
+         class="flex items-center px-3 py-2 text-gray-300 rounded-md hover:bg-gray-800 hover:text-gray-300 transition-colors">
+        <lucide-icon [name]="icons.settings" class="w-4 h-4"></lucide-icon>
+        <span class="ml-3" *ngIf="!isCollapsed">Settings</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Bottom Section -->
+  <div class="border-t border-gray-800 p-3">
+    <button (click)="logout()" class="flex items-center w-full px-3 py-2 text-gray-300 rounded-md hover:bg-gray-800 hover:text-gray-300 transition-colors">
+      <lucide-icon [name]="icons.logout" class="w-4 h-4"></lucide-icon>
+      <span class="ml-3" *ngIf="!isCollapsed">Logout</span>
+    </button>
+  </div>
+</aside>

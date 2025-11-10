@@ -1,0 +1,22 @@
+<div class="not-found-container">
+  <div class="not-found-content">
+    <div class="error-animation">
+      <div class="error-number">4</div>
+      <div class="error-number">0</div>
+      <div class="error-number">4</div>
+    </div>
+    <h1 class="error-title">Oops! Page Not Found</h1>
+    <p class="error-message">The page you're looking for doesn't exist or has been moved.</p>
+    <div class="action-buttons">
+      <button (click)="goBack()" class="btn-back">
+        <lucide-icon [name]="ArrowLeft" class="w-4 h-4"></lucide-icon>
+        Go Back
+      </button>
+      
+      <a routerLink="/dashboard" class="btn-home">
+        <lucide-icon [name]="Home" class="w-4 h-4"></lucide-icon>
+        Go to Dashboard
+      </a>
+    </div>
+  </div>
+</div>

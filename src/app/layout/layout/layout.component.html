@@ -1,0 +1,19 @@
+<!-- // layout.component.html -->
+<div class="flex h-screen bg-gray-100">
+  <!-- Sidebar -->
+  <app-sidebar 
+    [isCollapsed]="isSidebarCollapsed" 
+    (collapsedChange)="isSidebarCollapsed = $event">
+  </app-sidebar>
+
+  <!-- Main Content -->
+  <div class="flex-1 flex flex-col overflow-hidden">
+    <!-- Header -->
+    <app-header></app-header>
+
+    <!-- Page Content -->
+    <main class="flex-1 overflow-y-auto">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>
