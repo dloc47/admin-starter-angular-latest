@@ -1,0 +1,296 @@
+<div class="container mx-auto p-6">
+  <!-- Header -->
+  <div class="mb-6 flex items-center justify-between">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900">Home Carousel Management</h1>
+      <p class="text-gray-600 mt-1">Manage carousel images and settings</p>
+    </div>
+    <div class="flex gap-3">
+      <button 
+        (click)="togglePreview()" 
+        class="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+        <lucide-icon [name]="icons.eye" class="w-4 h-4"></lucide-icon>
+        {{ previewMode ? 'Edit Mode' : 'Preview' }}
+      </button>
+      <button 
+        (click)="saveCarousel()" 
+        class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+        <lucide-icon [name]="icons.save" class="w-4 h-4"></lucide-icon>
+        Save Changes
+      </button>
+    </div>
+  </div>
+
+  <!-- Preview Mode -->
+  <div *ngIf="previewMode" class="mb-6">
+    <div class="relative w-full h-96 bg-gray-900 rounded-lg overflow-hidden">
+      <div class="relative h-full">
+        <img 
+          [src]="carouselImages[currentSlideIndex]?.imageUrl || 'https://via.placeholder.com/1920x600'" 
+          [alt]="carouselImages[currentSlideIndex]?.altText || 'Carousel image'"
+          class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-8 text-white">
+          <h2 class="text-3xl font-bold mb-2">{{ carouselImages[currentSlideIndex]?.title }}</h2>
+          <p class="text-lg">{{ carouselImages[currentSlideIndex]?.description }}</p>
+        </div>
+      </div>
+      
+      <!-- Navigation Controls -->
+      <button 
+        *ngIf="carouselSettings.showControls"
+        (click)="prevSlide()" 
+        class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-2 rounded-full transition-colors">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+      </button>
+      <button 
+        *ngIf="carouselSettings.showControls"
+        (click)="nextSlide()" 
+        class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-2 rounded-full transition-colors">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </button>
+      
+      <!-- Indicators -->
+      <div *ngIf="carouselSettings.showIndicators" class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+        <button 
+          *ngFor="let image of carouselImages; let i = index"
+          (click)="goToSlide(i)"
+          [class]="i === currentSlideIndex ? 'w-8 h-2 bg-white rounded' : 'w-2 h-2 bg-white/50 rounded-full'"
+          class="transition-all">
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Mode -->
+  <form [formGroup]="carouselForm" *ngIf="!previewMode" class="space-y-6">
+    <!-- Settings Section -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <div class="flex items-center gap-3 mb-6">
+        <lucide-icon [name]="icons.settings" class="w-5 h-5 text-gray-700"></lucide-icon>
+        <h2 class="text-xl font-semibold text-gray-900">Carousel Settings</h2>
+      </div>
+      
+      <div formGroupName="settings" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Auto Slide -->
+          <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+            <div class="flex items-center gap-3">
+              <lucide-icon [name]="carouselSettings.autoSlide ? icons.play : icons.pause" class="w-5 h-5 text-gray-600"></lucide-icon>
+              <div>
+                <label class="font-medium text-gray-900">Auto Slide</label>
+                <p class="text-sm text-gray-600">Automatically transition between slides</p>
+              </div>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" formControlName="autoSlide" (change)="onAutoSlideChange()" class="sr-only peer">
+              <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+            </label>
+          </div>
+
+          <!-- Slide Interval -->
+          <div class="p-4 bg-gray-50 rounded-lg">
+            <div class="flex items-center gap-3 mb-2">
+              <lucide-icon [name]="icons.clock" class="w-5 h-5 text-gray-600"></lucide-icon>
+              <label class="font-medium text-gray-900">Slide Interval (ms)</label>
+            </div>
+            <input 
+              type="number" 
+              formControlName="slideInterval"
+              (change)="onIntervalChange()"
+              min="1000" 
+              step="1000"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            <p class="text-xs text-gray-500 mt-1">Minimum: 1000ms (1 second)</p>
+          </div>
+
+          <!-- Show Indicators -->
+          <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+            <div>
+              <label class="font-medium text-gray-900">Show Indicators</label>
+              <p class="text-sm text-gray-600">Display slide indicators at bottom</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" formControlName="showIndicators" class="sr-only peer">
+              <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+            </label>
+          </div>
+
+          <!-- Show Controls -->
+          <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+            <div>
+              <label class="font-medium text-gray-900">Show Controls</label>
+              <p class="text-sm text-gray-600">Display navigation arrows</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" formControlName="showControls" class="sr-only peer">
+              <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+            </label>
+          </div>
+
+          <!-- Animation Type -->
+          <div class="p-4 bg-gray-50 rounded-lg">
+            <label class="font-medium text-gray-900 mb-2 block">Animation Type</label>
+            <select formControlName="animationType" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              <option value="slide">Slide</option>
+              <option value="fade">Fade</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Carousel Images Section -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-3">
+          <lucide-icon [name]="icons.image" class="w-5 h-5 text-gray-700"></lucide-icon>
+          <h2 class="text-xl font-semibold text-gray-900">Carousel Images</h2>
+        </div>
+        <button 
+          type="button"
+          (click)="addNewImage()" 
+          class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+          <lucide-icon [name]="icons.plus" class="w-4 h-4"></lucide-icon>
+          Add Image
+        </button>
+      </div>
+
+      <div formArrayName="images" class="space-y-4">
+        <!-- Empty State -->
+        <div *ngIf="carouselImages.length === 0" class="text-center py-12 border-2 border-dashed border-gray-300 rounded-lg">
+          <lucide-icon [name]="icons.image" class="w-12 h-12 text-gray-400 mx-auto mb-3"></lucide-icon>
+          <p class="text-gray-600 mb-4">No carousel images added yet</p>
+          <button 
+            type="button"
+            (click)="addNewImage()" 
+            class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors mx-auto">
+            <lucide-icon [name]="icons.plus" class="w-4 h-4"></lucide-icon>
+            Add First Image
+          </button>
+        </div>
+
+        <div 
+          *ngFor="let imageControl of imagesFormArray.controls; let i = index" 
+          [formGroupName]="i"
+          class="border border-gray-200 rounded-lg p-4 hover:border-gray-300 transition-colors">
+          
+          <div class="flex gap-4">
+            <!-- Image Preview -->
+            <div class="w-48 h-32 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+              <img 
+                [src]="imageControl.get('imageUrl')?.value || 'https://via.placeholder.com/300x200'" 
+                alt="Carousel preview"
+                class="w-full h-full object-cover">
+            </div>
+
+            <!-- Form Fields -->
+            <div class="flex-1 space-y-3">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <!-- Image URL -->
+                <div class="md:col-span-2">
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Image URL *</label>
+                  <div class="flex gap-2">
+                    <input 
+                      type="text" 
+                      formControlName="imageUrl"
+                      (change)="onImageUrlChange(i, $event)"
+                      placeholder="https://example.com/image.jpg"
+                      class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <label class="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 cursor-pointer">
+                      <lucide-icon [name]="icons.upload" class="w-4 h-4"></lucide-icon>
+                      Upload
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        (change)="handleFileUpload($event, i)"
+                        class="hidden">
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Title -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                  <input 
+                    type="text" 
+                    formControlName="title"
+                    placeholder="Carousel title"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+
+                <!-- Alt Text -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Alt Text</label>
+                  <input 
+                    type="text" 
+                    formControlName="altText"
+                    placeholder="Image alt text"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+
+                <!-- Link -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Link URL</label>
+                  <input 
+                    type="text" 
+                    formControlName="link"
+                    placeholder="https://example.com"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+
+                <!-- Order -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Order</label>
+                  <input 
+                    type="number" 
+                    formControlName="order"
+                    readonly
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50">
+                </div>
+
+                <!-- Description -->
+                <div class="md:col-span-2">
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                  <textarea 
+                    formControlName="description"
+                    rows="2"
+                    placeholder="Carousel description"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex flex-col gap-2 flex-shrink-0">
+              <button 
+                type="button"
+                (click)="moveImageUp(i)"
+                [disabled]="i === 0"
+                class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                <lucide-icon [name]="icons.move" class="w-4 h-4 rotate-90"></lucide-icon>
+              </button>
+              <button 
+                type="button"
+                (click)="moveImageDown(i)"
+                [disabled]="i === carouselImages.length - 1"
+                class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                <lucide-icon [name]="icons.move" class="w-4 h-4 -rotate-90"></lucide-icon>
+              </button>
+              <button 
+                type="button"
+                (click)="removeImage(i)"
+                class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                <lucide-icon [name]="icons.trash" class="w-4 h-4"></lucide-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

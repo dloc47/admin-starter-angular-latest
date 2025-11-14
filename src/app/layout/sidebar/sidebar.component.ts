@@ -3,25 +3,25 @@ import { RouterModule } from '@angular/router';
 import { 
   LucideAngularModule, 
   LayoutDashboard, 
-  Home, 
+  Package,
+  MapPin,
+  BookText,
+  Briefcase,
+  Images,
+  MessageSquare,
+  Star,
   Settings, 
   LogOut,
-  ListChecks,
   Users,
-  Ticket,
   UserCog,
   ChevronDown,
   ChevronRight,
-  PlusCircle,
-  FileText,
-  Sliders,
-  BookOpen,
-  Award,
-  ShoppingBag,
   Database,
-  FileBarChart,
-  UserPlus,
-  ClipboardList
+  HelpCircle,
+  FileText,
+  Mail,
+  Shield,
+  Code
 } from 'lucide-angular';
 import { CommonModule } from '@angular/common';
 
@@ -37,56 +37,45 @@ export class SidebarComponent {
   @Output() collapsedChange = new EventEmitter<boolean>();
   
   // Track expanded/collapsed state of each dropdown
-  expandedMenus:any = {
-    quiz: false,
-    players: false,
-    coupons: false,
+  expandedMenus: any = {
+    packages: false,
+    destinations: false,
+    cmsPages: false,
+    messages: false,
     users: false,
-    content: false,
-    reports: false
+    settings: false
   };
 
   // Icons organized by category
   icons = {
     dashboard: LayoutDashboard,
-    home: Home,
+    package: Package,
+    mapPin: MapPin,
+    bookText: BookText,
+    briefcase: Briefcase,
+    images: Images,
+    messageSquare: MessageSquare,
+    star: Star,
     settings: Settings,
     logout: LogOut,
+    users: Users,
+    userCog: UserCog,
     
     // Navigation icons
     chevronDown: ChevronDown,
     chevronRight: ChevronRight,
     
-    // Quiz section
-    quiz: ListChecks,
-    quizList: ClipboardList,
-    addQuiz: PlusCircle,
-    quizConfig: Sliders,
-    quizRules: BookOpen,
+    // CMS Pages icons
+    helpCircle: HelpCircle,
+    fileText: FileText,
+    mail: Mail,
     
-    // Players section
-    players: Users,
-    playerList: UserPlus,
-    playerActivity: FileBarChart,
-    
-    // Coupons section
-    coupons: Ticket,
-    couponList: ShoppingBag,
-    couponGenerate: PlusCircle,
-    redemptions: Award,
+    // Settings icons
+    shield: Shield,
+    code: Code,
     
     // Users section
-    users: UserCog,
-    userList: Users,
-    roles: Database,
-    
-    // Content Management
-    content: FileText,
-    banners: FileText,
-    faqs: BookOpen,
-    
-    // Reports
-    reports: FileBarChart
+    database: Database
   };
   
   toggleSidebar() {
@@ -102,10 +91,6 @@ export class SidebarComponent {
 
   toggleMenu(menu: string) {
     this.expandedMenus[menu] = !this.expandedMenus[menu];
-    // Close other menus when opening one (optional)
-    // Object.keys(this.expandedMenus).forEach(m => {
-    //   if (m !== menu) this.expandedMenus[m] = false;
-    // });
   }
 
   logout() {
